@@ -73,23 +73,12 @@ PREMISSAS
 
 
 
-select 
-	s.store_segment,
-	avg(o.order_amount + o.order_delivery_fee) as Receita_Media,
-	sum(o.order_amount + o.order_delivery_fee) as Total_Receita
-from 
-	orders o
-left join stores s
-on s.store_id = o.store_id 
-left join payments p 
-on p.payment_order_id = o.payment_order_id 
-where o.order_status = 'FINISHED' and p.payment_status = 'PAID'
-group by s.store_segment 
 
 
 select 
 	h.hub_state,
-	avg(o.order_amount + o.order_delivery_fee) as Receita_Media,
+	s.store_segment, 
+	round( avg(o.order_amount + o.order_delivery_fee), 2) as Receita_Media,
 	sum(o.order_amount + o.order_delivery_fee) as Total_Receita
 from 
 	orders o
@@ -100,7 +89,7 @@ on h.hub_id = s.hub_id
 left join payments p 
 on p.payment_order_id = o.payment_order_id 
 where o.order_status = 'FINISHED' and p.payment_status = 'PAID'
-group by h.hub_state 
+group by h.hub_state, s.store_segment 
 
 
 
